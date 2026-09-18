@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>全身周训练完整计划表</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background-color: #121721;
+      background-image: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(66, 165, 255, 0.08), transparent);
+      color: #e8edf3;
+      padding: 32px 16px 40px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 32px;
+      font-size: 26px;
+      letter-spacing: 1px;
+      background: linear-gradient(120deg, #64b5f6, #42a5ff 60%, #81d4fa);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .card {
+      --accent: #42a5ff;
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 24px;
+      background-color: #1c2433;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-left: 4px solid var(--accent);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    }
+
+    .card.monday {
+      --accent: #ff9800;
+    }
+
+    .card.tuesday {
+      --accent: #ef5350;
+    }
+
+    .card.wednesday {
+      --accent: #26c6da;
+    }
+
+    .card.thursday {
+      --accent: #42b983;
+    }
+
+    .card.friday {
+      --accent: #9575cd;
+    }
+
+    .card.saturday {
+      --accent: #ab47bc;
+    }
+
+    .card.sunday {
+      --accent: #42a5f5;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .card-title>span:first-child {
+      color: var(--accent);
+    }
+
+    .total-time {
+      color: #9fb0c3;
+      font-size: 14px;
+      font-weight: 400;
+    }
+
+    .tip-block {
+      font-size: 14px;
+      margin: 12px 0;
+      padding: 10px 14px;
+      background-color: #232c3d;
+      border-left: 3px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      line-height: 1.8;
+      color: #c9d4e0;
+    }
+
+    .tip-block.forbidden {
+      background-color: rgba(239, 83, 80, 0.1);
+      border-left-color: #ef5350;
+      color: #ffab9d;
+    }
+
+    .rule-box {
+      background-color: rgba(171, 71, 188, 0.1);
+      border: 1px solid rgba(171, 71, 188, 0.45);
+      padding: 12px 16px;
+      border-radius: 10px;
+      margin: 14px 0;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .rule-box strong {
+      color: #dcb8e8;
+    }
+
+    .rule-box ul {
+      padding-left: 20px;
+      margin-top: 6px;
+    }
+
+    .rule-box li {
+      margin: 4px 0;
+    }
+
+    .exercise-list {
+      margin: 14px 0;
+    }
+
+    .exercise {
+      padding: 12px 14px;
+      background: #232c3d;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+
+    .exercise-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .exercise-name {
+      font-weight: 500;
+    }
+
+    .exercise-set {
+      color: var(--accent);
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    .video-link {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px dashed rgba(255, 255, 255, 0.1);
+    }
+
+    .video-link a {
+      color: #81d4fa;
+      font-size: 13px;
+      text-decoration: none;
+    }
+
+    .video-link a:hover {
+      text-decoration: underline;
+    }
+
+    .table-wrap {
+      margin: 14px 0 4px;
+      border: 1px solid #2c384e;
+      border-radius: 10px;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      min-width: 420px;
+    }
+
+    th,
+    td {
+      padding: 10px 8px;
+      text-align: center;
+      border-bottom: 1px solid #2c384e;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    th {
+      background-color: #232c3d;
+      color: #90caf9;
+      font-weight: 600;
+    }
+
+    tbody tr:nth-child(even) td {
+      background-color: rgba(255, 255, 255, 0.02);
+    }
+
+    tbody tr:hover td {
+      background-color: rgba(144, 202, 249, 0.06);
+    }
+
+    /* ===== 打卡 ===== */
+    .checkin-overview {
+      background-color: #1c2433;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 14px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    }
+
+    .week-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+    }
+
+    .day-cell {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      padding: 10px 2px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      background: #232c3d;
+      font-size: 13px;
+      color: #9fb0c3;
+    }
+
+    .day-cell-check {
+      height: 16px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #42b983;
+      line-height: 1;
+    }
+
+    .day-cell.done {
+      background: rgba(66, 185, 131, 0.12);
+      border-color: rgba(66, 185, 131, 0.45);
+      color: #7ee2b8;
+    }
+
+    .day-cell.today {
+      box-shadow: inset 0 0 0 1px #42a5ff;
+      color: #e8edf3;
+    }
+
+    .day-cell.future {
+      opacity: 0.55;
+    }
+
+    .day-cell.viewing {
+      border-color: #42a5ff;
+      color: #42a5ff;
+    }
+
+    .day-cell:not(.viewing) {
+      cursor: pointer;
+    }
+
+    .day-cell:not(.viewing):hover {
+      border-color: rgba(66, 165, 255, 0.4);
+    }
+
+    .view-banner {
+      text-align: center;
+      font-size: 13px;
+      color: #9fb0c3;
+      background: rgba(66, 165, 255, 0.08);
+      border: 1px solid rgba(66, 165, 255, 0.25);
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin-bottom: 16px;
+    }
+
+    .view-banner b {
+      color: #42a5ff;
+    }
+
+    .checkin-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .checkin-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 18px;
+      font-size: 13px;
+      color: #9fb0c3;
+    }
+
+    .checkin-stats b {
+      color: #42a5ff;
+    }
+
+    .user-badge {
+      font-size: 13px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: transparent;
+      color: #9fb0c3;
+      cursor: pointer;
+    }
+
+    .user-badge:hover {
+      color: #e8edf3;
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .user-mask {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+
+    .user-mask[hidden] {
+      display: none;
+    }
+
+    .user-modal {
+      width: min(320px, 86vw);
+      background: #1c2433;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    .user-modal-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .user-options {
+      display: grid;
+      gap: 10px;
+    }
+
+    .user-option {
+      padding: 12px 0;
+      border-radius: 8px;
+      border: 1px solid #2c384e;
+      background: #232c3d;
+      color: #e8edf3;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .user-option:hover {
+      border-color: #42a5ff;
+      background: rgba(66, 165, 255, 0.12);
+    }
+
+    .edit-panel {
+      width: min(780px, 94vw);
+      max-height: 88vh;
+      overflow-y: auto;
+      background: #1c2433;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 16px 18px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    .edit-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .edit-title {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .ed-close {
+      background: none;
+      border: none;
+      color: #9fb0c3;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .ed-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+
+    .ed-tab {
+      padding: 5px 12px;
+      border-radius: 999px;
+      border: 1px solid #2c384e;
+      background: #232c3d;
+      color: #9fb0c3;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .ed-tab.on {
+      border-color: #42a5ff;
+      color: #42a5ff;
+      background: rgba(66, 165, 255, 0.12);
+    }
+
+    .ed-label {
+      display: block;
+      font-size: 12px;
+      color: #9fb0c3;
+      margin: 10px 0 4px;
+    }
+
+    .ed-input,
+    .ed-area {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid #2c384e;
+      background: #232c3d;
+      color: #e8edf3;
+      font-size: 13px;
+      outline: none;
+      font-family: inherit;
+    }
+
+    .ed-area {
+      resize: vertical;
+      line-height: 1.6;
+    }
+
+    .ed-input:focus,
+    .ed-area:focus {
+      border-color: #42a5ff;
+    }
+
+    .ed-hint {
+      font-size: 12px;
+      color: #9fb0c3;
+      margin-top: 4px;
+      opacity: 0.8;
+    }
+
+    .ed-block {
+      border: 1px solid #2c384e;
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin: 10px 0;
+    }
+
+    .ed-block-type {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 12px;
+      color: #90caf9;
+    }
+
+    .ed-del {
+      background: none;
+      border: 1px solid rgba(239, 83, 80, 0.5);
+      color: #ff8a80;
+      border-radius: 6px;
+      font-size: 12px;
+      padding: 2px 8px;
+      cursor: pointer;
+    }
+
+    .ed-grid2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .ed-grid5 {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+
+    .ed-item {
+      padding: 8px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+
+    .ed-add-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .ed-add {
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px dashed rgba(66, 165, 255, 0.5);
+      background: transparent;
+      color: #81d4fa;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .ed-foot {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 16px;
+    }
+
+    .ed-btn {
+      padding: 8px 18px;
+      border-radius: 8px;
+      border: none;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .ed-btn.primary {
+      background: #42a5ff;
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .ed-btn.ghost {
+      background: #232c3d;
+      color: #9fb0c3;
+      border: 1px solid #2c384e;
+    }
+
+    .ed-btn.danger {
+      background: transparent;
+      border: 1px solid rgba(239, 83, 80, 0.5);
+      color: #ff8a80;
+      margin-right: auto;
+    }
+
+    .checkin-btn {
+      font-size: 13px;
+      padding: 4px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--accent);
+      background: transparent;
+      color: var(--accent);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .checkin-btn:hover {
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .checkin-btn.active {
+      background: var(--accent);
+      color: #121721;
+      font-weight: 600;
+    }
+
+    .checkin-btn:disabled {
+      opacity: 0.55;
+      cursor: default;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 28px;
+      transform: translateX(-50%) translateY(8px);
+      background: #273042;
+      border: 1px solid #2c384e;
+      color: #e8edf3;
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-size: 13px;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.25s;
+      z-index: 99;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media(max-width:600px) {
+      .week-grid {
+        gap: 4px;
+      }
+
+      .day-cell {
+        padding: 8px 2px;
+        font-size: 12px;
+        border-radius: 8px;
+      }
+
+      .checkin-stats {
+        gap: 12px;
+      }
+
+      .ed-grid2 {
+        grid-template-columns: 1fr;
+      }
+
+      .ed-grid5 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      body {
+        padding: 20px 12px 28px;
+      }
+
+      h1 {
+        font-size: 22px;
+      }
+
+      .card {
+        padding: 16px 14px;
+      }
+
+      th,
+      td {
+        padding: 8px 6px;
+        font-size: 13px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <h1>🏃 全身周训练完整计划表</h1>
+
+  <!-- 打卡概览 -->
+  <div class="checkin-overview">
+    <div class="checkin-head">
+      <div class="checkin-stats" id="checkinStats"></div>
+      <div style="display:flex;gap:8px;">
+        <button class="user-badge" id="editPlanBtn">✏️ 编辑计划</button>
+        <button class="user-badge" id="userSwitch" title="切换/修改身份">👤 <span id="userNameLabel"></span></button>
+      </div>
+    </div>
+    <div class="week-grid" id="weekGrid"></div>
+  </div>
+
+  <div id="planArea"></div>
+
+  <div class="user-mask" id="userMask" hidden>
+    <div class="user-modal">
+      <div class="user-modal-title">👀 今天谁打卡？</div>
+      <div class="user-options">
+        <button class="user-option" data-name="范若兰">范若兰</button>
+        <button class="user-option" data-name="王华莹">王华莹</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="user-mask" id="editMask" hidden>
+    <div class="edit-panel">
+      <div class="edit-head">
+        <span class="edit-title">✏️ 编辑计划</span>
+        <button class="ed-close" id="editClose">×</button>
+      </div>
+      <div class="ed-tabs" id="edTabs"></div>
+      <div class="ed-body" id="edBody"></div>
+      <div class="ed-foot">
+        <button class="ed-btn danger" id="editReset">恢复默认计划</button>
+        <button class="ed-btn ghost" id="editCancel">取消</button>
+        <button class="ed-btn primary" id="editSave">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    /* ===== 打卡功能 =====
+       云端存储：Supabase 免费版（邮箱即可注册，无需信用卡）
+       1. 注册 https://supabase.com 并新建一个项目
+       2. SQL Editor 中执行下面的 SQL（多人模式：按 user_name 区分各自打卡记录。
+          旧单人表升级执行前 3 条即可，已有记录会保留并归属到「我」名下）：
+          alter table checkins add column if not exists user_name text not null default '我';
+          alter table checkins drop constraint checkins_pkey;
+          alter table checkins add primary key (user_name, date);
+          alter table checkins enable row level security;
+          create policy "anon_all" on checkins for all to anon using (true) with check (true);
+          「编辑计划」功能还需要建 plans 表：
+          create table if not exists plans (
+            user_name text primary key,
+            plan jsonb not null,
+            updated_at timestamptz default now()
+          );
+          alter table plans enable row level security;
+          create policy "anon_all" on plans for all to anon using (true) with check (true);
+       3. Project Settings → API，把 Project URL 和 anon public key 填到下面
+       未填写配置时自动使用浏览器本地存储（换设备不同步，清缓存会丢） */
+    const SUPA_CONFIG = {
+      url: 'https://tnpepawxrveddfeqzccu.supabase.co',      // 例如 https://xxxxxxxx.supabase.co
+      anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRucGVwYXd4cnZlZGRmZXF6Y2N1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk2OTY4MjAsImV4cCI6MjEwNTI3MjgyMH0.QpN1TAqxZLt1oa0p1arDAtH1hDXJ48SzAMt0F4rjlM0'
+    };
+
+    const LOCAL_KEY = 'planCheckIns';
+    const DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+    const DAY_NAMES = { monday: '一', tuesday: '二', wednesday: '三', thursday: '四', friday: '五', saturday: '六', sunday: '日' };
+
+    let userName = localStorage.getItem('planUserName') || '';
+    let checkIns = {};        // { 'YYYY-MM-DD': { day, time } } 当前用户的记录
+    let cloudAvailable = false;
+    let busy = false;
+    let toastTimer;
+    let plan = null;          // 当前用户的计划数据（每人一份，存云端 plans 表）
+    let editorPlan = null;    // 编辑器中的计划副本
+    let editDay = 'monday';
+    let viewDay = null;       // 正在查看的星期（点击周概览可切换，默认今天）
+
+    /* 内置默认计划：两人都未自定义时的兜底。页面右上「编辑计划」可改成自己的并保存到云端 */
+    const DEFAULT_PLAN = {
+      days: {
+        monday: {
+          title: '周一｜下肢力量',
+          subtitle: '重点：臀腿，保护膝盖',
+          blocks: [
+            {
+              type: 'exercises',
+              items: [
+                { name: '深蹲（徒手或哑铃）', sets: '3组 × 12次', videoLabel: '标准徒手深蹲', videoUrl: 'https://b23.tv/9F9wQK0' },
+                { name: '臀桥（可单腿）', sets: '3组 × 15次', videoLabel: '臀桥/单腿臀桥', videoUrl: 'https://b23.tv/00ZGT8U' },
+                { name: '保加利亚分腿蹲（扶椅子）', sets: '3组 × 每侧10次', videoLabel: '保加利亚分腿蹲', videoUrl: 'https://b23.tv/7QHk4ol' },
+                { name: '站姿提踵（练小腿，防跟腱痛）', sets: '3组 × 15次', videoLabel: '站姿提踵', videoUrl: 'https://b23.tv/hnpwh4l' }
+              ]
+            },
+            { type: 'forbidden', text: '❌不要练：大重量硬拉、跳箱（太耗神经，影响后续有氧训练）' }
+          ]
+        },
+        tuesday: {
+          title: '周二｜心肺强化',
+          subtitle: '总时长：40分钟',
+          blocks: [
+            { type: 'tip', text: '✨体感：累，但每组只有5分钟，全程能说短句\n⚙️速度按键：3 → 4 → 3（共3次）\n⛰️坡度切换：4→10→6→10→6→10→6→10→3（共8次）' },
+            {
+              type: 'table',
+              rows: [
+                ['热身', '5min', '3', '4', '105‑120'],
+                ['心肺1', '5min', '4', '10', '145‑155'],
+                ['恢复1', '2min', '4', '6', '130‑140'],
+                ['心肺2', '5min', '4', '10', '145‑155'],
+                ['恢复2', '2min', '4', '6', '130‑140'],
+                ['心肺3', '5min', '4', '10', '145‑155'],
+                ['恢复3', '2min', '4', '6', '130‑140'],
+                ['心肺4', '5min', '4', '10', '145‑155'],
+                ['冷身', '5min', '3', '3', '100‑115']
+              ]
+            }
+          ]
+        },
+        wednesday: {
+          title: '周三｜上肢+核心',
+          subtitle: '重点：体态、呼吸',
+          blocks: [
+            {
+              type: 'exercises',
+              items: [
+                { name: '哑铃划船', sets: '3组 × 12次', videoLabel: '哑铃单臂划船', videoUrl: 'https://b23.tv/3TJoab5' },
+                { name: '俯卧撑（可跪姿）', sets: '3组 × 8‑10次', videoLabel: '跪姿标准俯卧撑', videoUrl: 'https://b23.tv/9YE6Exj' },
+                { name: '平板支撑', sets: '3组 × 45秒', videoLabel: '平板支撑', videoUrl: 'https://b23.tv/DqsxU3r' },
+                { name: '死虫式', sets: '3组 × 每侧10次', videoLabel: '死虫式核心', videoUrl: 'https://b23.tv/C7k1tyE' },
+                { name: '鸟狗式', sets: '3组 × 每侧10次', videoLabel: '鸟狗式', videoUrl: 'https://b23.tv/QacdmMJ' }
+              ]
+            }
+          ]
+        },
+        thursday: {
+          title: '周四｜轻松燃脂',
+          subtitle: '总时长：45分钟',
+          blocks: [
+            { type: 'tip', text: '✨体感：轻松，全程能完整聊天。这天不追求累，追求“稳”和“久”\n⚙️速度按键：3 → 4 → 3（共3次）\n⛰️坡度切换：4→7→3（共2次）' },
+            {
+              type: 'table',
+              rows: [
+                ['热身', '5min', '3', '4', '105‑120'],
+                ['匀速燃脂', '35min', '4', '7', '125‑138'],
+                ['冷身', '5min', '3', '3', '100‑115']
+              ]
+            }
+          ]
+        },
+        friday: {
+          title: '周五｜完全休息',
+          subtitle: '恢复日',
+          blocks: [
+            { type: 'tip', text: '✅可以做：泡沫轴滚腿、拉伸、散步' },
+            { type: 'forbidden', text: '❌绝对不做：任何让心率上130的运动' }
+          ]
+        },
+        saturday: {
+          title: '周六｜间歇冲刺',
+          subtitle: '总时长：30分钟',
+          blocks: [
+            { type: 'tip', text: '✨体感：冲刺时说不出话，恢复时大口喘。每组3分钟，共3组\n⚙️速度按键：3 → 4 → 3（共3次）\n⛰️坡度切换：4→12→4→12→4→12→3（共6次）' },
+            {
+              type: 'rule',
+              heading: '⚠️冲刺坡度调节核心规则（速度固定4不变，只用坡度调强度）',
+              items: ['冲刺后心率＜160 → 坡度加到13‑14', '冲刺后心率165‑178 → 保持坡度12，完美状态', '冲刺后心率＞175且喘不上气 → 坡度降到10'],
+              note: '💡关键：永远不要靠加速度来冲心率，用坡度换。'
+            },
+            {
+              type: 'table',
+              rows: [
+                ['热身', '5min', '3', '4', '105‑125'],
+                ['冲刺1', '3min', '4', '12', '165‑178'],
+                ['恢复1', '3min', '4', '4', '120‑130'],
+                ['冲刺2', '3min', '4', '12', '165‑178'],
+                ['恢复2', '3min', '4', '4', '120‑130'],
+                ['冲刺3', '3min', '4', '12', '165‑178'],
+                ['冷身', '5min', '3', '3', '100‑115']
+              ]
+            }
+          ]
+        },
+        sunday: {
+          title: '周日｜恢复走',
+          subtitle: '总时长：30分钟',
+          blocks: [
+            { type: 'tip', text: '✨体感：非常轻松，几乎不喘，能随便聊天。这天绝对不能练累\n⚙️速度按键：全程速度3，一次都不用改（0次）\n⛰️坡度切换：3→5→2（共2次）' },
+            {
+              type: 'table',
+              rows: [
+                ['热身', '5min', '3', '3', '95‑110'],
+                ['慢走', '20min', '3', '5', '100‑115'],
+                ['冷身', '5min', '3', '2', '95‑105']
+              ]
+            }
+          ]
+        }
+      }
+    };
+
+    // ---- 工具 ----
+    const fmtDate = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    const todayStr = () => fmtDate(new Date());
+    const fmtTime = () => {
+      const n = new Date();
+      return String(n.getHours()).padStart(2, '0') + ':' + String(n.getMinutes()).padStart(2, '0');
+    };
+
+    function weekDates() {
+      const now = new Date();
+      const mon = new Date(now);
+      mon.setDate(now.getDate() - ((now.getDay() + 6) % 7));
+      return DAYS.map((_, i) => {
+        const d = new Date(mon);
+        d.setDate(mon.getDate() + i);
+        return d;
+      });
+    }
+
+    function toast(msg) {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => el.classList.remove('show'), 2600);
+    }
+
+    // ---- 存储 ----
+    function localKey() {
+      return LOCAL_KEY + ':' + userName;
+    }
+
+    function loadLocal() {
+      try {
+        return JSON.parse(localStorage.getItem(localKey())) || {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function saveLocal() {
+      localStorage.setItem(localKey(), JSON.stringify(checkIns));
+    }
+
+    async function sbFetch(path, options) {
+      options = options || {};
+      const res = await fetch(SUPA_CONFIG.url.replace(/\/$/, '') + '/rest/v1/' + path, Object.assign({}, options, {
+        headers: Object.assign({
+          apikey: SUPA_CONFIG.anonKey,
+          Authorization: 'Bearer ' + SUPA_CONFIG.anonKey,
+          'Content-Type': 'application/json'
+        }, options.headers)
+      }));
+      if (!res.ok) throw new Error('Supabase ' + res.status);
+      if (res.status === 204) return null;
+      const text = await res.text();
+      return text ? JSON.parse(text) : null;
+    }
+
+    async function initData() {
+      if (SUPA_CONFIG.url && SUPA_CONFIG.anonKey) {
+        try {
+          const rows = await sbFetch('checkins?select=date,day,time&user_name=eq.' + encodeURIComponent(userName) + '&limit=1000');
+          checkIns = {};
+          (rows || []).forEach(r => {
+            if (r.date) checkIns[r.date] = { day: r.day, time: r.time };
+          });
+          cloudAvailable = true;
+          saveLocal(); // 本地留一份缓存
+          return;
+        } catch (e) {
+          toast('云端连接失败，使用本地数据');
+        }
+      }
+      checkIns = loadLocal();
+    }
+
+    async function addCheckIn(date, day) {
+      const rec = { day: day, time: fmtTime() };
+      checkIns[date] = rec;
+      saveLocal();
+      render();
+      if (cloudAvailable) {
+        try {
+          await sbFetch('checkins?on_conflict=user_name,date', {
+            method: 'POST',
+            headers: { Prefer: 'resolution=merge-duplicates,return=minimal' },
+            body: JSON.stringify([{ user_name: userName, date: date, day: rec.day, time: rec.time }])
+          });
+        } catch (e) {
+          toast('云端保存失败，先记录在本地');
+        }
+      }
+    }
+
+    async function removeCheckIn(date) {
+      delete checkIns[date];
+      saveLocal();
+      render();
+      if (cloudAvailable) {
+        try {
+          await sbFetch('checkins?user_name=eq.' + encodeURIComponent(userName) + '&date=eq.' + date, { method: 'DELETE', headers: { Prefer: 'return=minimal' } });
+        } catch (e) {
+          toast('云端删除失败');
+        }
+      }
+    }
+
+    // ---- 渲染 ----
+    function render() {
+      renderUser();
+      renderWeek();
+      renderStats();
+      renderTodayCard();
+      renderButtons();
+    }
+
+    function renderUser() {
+      document.getElementById('userNameLabel').textContent = userName;
+    }
+
+    // 渲染正在查看的那天计划卡片（数据驱动，支持每人自定义计划）
+    function renderTodayCard() {
+      const todayDay = DAYS[(new Date().getDay() + 6) % 7]; // 周一=0 … 周日=6
+      if (!viewDay) viewDay = todayDay;
+      const d = plan && plan.days ? plan.days[viewDay] : null;
+      const area = document.getElementById('planArea');
+      const banner = viewDay !== todayDay
+        ? '<div class="view-banner">正在查看 <b>周' + DAY_NAMES[viewDay] + '</b> 的计划，打卡仅限当天 · <a href="javascript:void(0)" id="backToday" style="color:#42a5ff;">回到今天</a></div>'
+        : '';
+      if (!d) { area.innerHTML = banner; return; }
+      area.innerHTML = banner + '<div class="card ' + viewDay + '">' +
+        '<div class="card-title"><span>' + esc(d.title) + '</span><span class="total-time">' + esc(d.subtitle || '') + '</span></div>' +
+        (d.blocks || []).map(blockHTML).join('') +
+        '</div>';
+      const back = document.getElementById('backToday');
+      if (back) back.addEventListener('click', function () { viewDay = todayDay; renderTodayCard(); renderWeek(); renderButtons(); });
+    }
+
+    function renderWeek() {
+      const today = todayStr();
+      const todayDay = DAYS[(new Date().getDay() + 6) % 7];
+      if (!viewDay) viewDay = todayDay;
+      document.getElementById('weekGrid').innerHTML = weekDates().map((d, i) => {
+        const ds = fmtDate(d);
+        const done = !!checkIns[ds];
+        const cls = ['day-cell'];
+        if (done) cls.push('done');
+        if (ds === today) cls.push('today');
+        if (ds > today) cls.push('future');
+        if (DAYS[i] === viewDay) cls.push('viewing');
+        return '<div class="' + cls.join(' ') + '" data-day="' + DAYS[i] + '"><span class="day-cell-check">' + (done ? '✓' : '') + '</span><span>' + DAY_NAMES[DAYS[i]] + '</span></div>';
+      }).join('');
+      document.querySelectorAll('#weekGrid .day-cell').forEach(cell => {
+        cell.addEventListener('click', function () {
+          const day = this.dataset.day;
+          if (day === viewDay) return;
+          viewDay = day;
+          renderTodayCard();
+          renderWeek();
+          renderButtons();
+        });
+      });
+    }
+
+    function renderStats() {
+      const weekDone = weekDates().filter(d => !!checkIns[fmtDate(d)]).length;
+      let streak = 0;
+      const cur = new Date();
+      if (!checkIns[fmtDate(cur)]) cur.setDate(cur.getDate() - 1); // 今天还没打卡则从昨天起算
+      while (checkIns[fmtDate(cur)]) {
+        streak++;
+        cur.setDate(cur.getDate() - 1);
+      }
+      // 累计天数 + 各训练类型完成次数
+      const dates = Object.keys(checkIns).sort();
+      let histHTML = '<span>📈 累计打卡 <b>0</b> 天</span>';
+      if (dates.length) {
+        const counts = {};
+        dates.forEach(ds => {
+          const day = checkIns[ds].day;
+          const d = plan && plan.days ? plan.days[day] : null;
+          const full = d && d.title ? d.title : '周' + DAY_NAMES[day];
+          const name = full.split('｜').pop(); // 「周一｜下肢力量」→「下肢力量」
+          counts[name] = (counts[name] || 0) + 1;
+        });
+        const parts = Object.keys(counts).sort((a, b) => counts[b] - counts[a])
+          .map(t => t + ' ×' + counts[t]);
+        histHTML = '<span>📈 累计打卡 <b>' + dates.length + '</b> 天</span><span>💪 ' + parts.join('、') + '</span>';
+      }
+      document.getElementById('checkinStats').innerHTML =
+        '<span>👤 <b>' + userName + '</b></span><span>📅 本周 <b>' + weekDone + '</b>/7 天</span><span>🔥 连续打卡 <b>' + streak + '</b> 天</span>' + histHTML;
+    }
+
+    function renderButtons() {
+      const today = todayStr();
+      const todayDay = DAYS[(new Date().getDay() + 6) % 7]; // 周一=0 … 周日=6
+      DAYS.forEach(day => {
+        const card = document.querySelector('.card.' + day);
+        if (!card) return;
+        let btn = card.querySelector('.checkin-btn');
+        if (!btn) {
+          btn = document.createElement('button');
+          btn.className = 'checkin-btn';
+          btn.addEventListener('click', function () { toggle(day); });
+          card.querySelector('.card-title').appendChild(btn);
+        }
+        const rec = checkIns[today];
+        const isToday = day === todayDay;
+        const active = isToday && !!rec && rec.day === day;
+        btn.classList.toggle('active', active);
+        btn.disabled = busy || !isToday;
+        btn.title = isToday ? '' : '只能在今天对应的卡片打卡';
+        btn.textContent = active ? '✓ 已打卡 ' + rec.time : (isToday ? '打卡' : '非今日');
+      });
+    }
+
+    async function toggle(day) {
+      const todayDay = DAYS[(new Date().getDay() + 6) % 7];
+      if (busy || day !== todayDay) return; // 只允许给今天打卡
+      busy = true;
+      renderButtons();
+      const date = todayStr();
+      if (checkIns[date] && checkIns[date].day === day) await removeCheckIn(date);
+      else await addCheckIn(date, day);
+      busy = false;
+      render();
+    }
+
+    // ---- 身份（两人各看各的）----
+    function openUserModal(done) {
+      const mask = document.getElementById('userMask');
+      mask.hidden = false;
+      mask.querySelectorAll('.user-option').forEach(btn => {
+        btn.onclick = function () {
+          const changed = userName !== this.dataset.name;
+          userName = this.dataset.name;
+          localStorage.setItem('planUserName', userName);
+          mask.hidden = true;
+          renderUser();
+          done && done(changed);
+        };
+      });
+    }
+
+    document.getElementById('userSwitch').addEventListener('click', function () {
+      openUserModal(async function (changed) {
+        if (changed) {
+          await loadPlan();
+          await initData();
+          render();
+        }
+      });
+    });
+
+    // ---- 计划（每人一份，存云端 plans 表，页面内编辑）----
+    const BLOCK_NAMES = { exercises: '动作列表', tip: '提示', forbidden: '禁止提示', table: '心率表格', rule: '规则框' };
+
+    function esc(s) {
+      return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function escAttr(s) {
+      return esc(s).replace(/"/g, '&quot;');
+    }
+
+    function blockHTML(b) {
+      if (b.type === 'exercises') {
+        return '<div class="exercise-list">' + (b.items || []).map(it =>
+          '<div class="exercise"><div class="exercise-row"><span class="exercise-name">' + esc(it.name) +
+          '</span><span class="exercise-set">' + esc(it.sets) + '</span></div>' +
+          (it.videoUrl ? '<div class="video-link"><a href="' + escAttr(it.videoUrl) + '" target="_blank">📺参考视频：' + esc(it.videoLabel || '查看视频') + '</a></div>' : '') +
+          '</div>'
+        ).join('') + '</div>';
+      }
+      if (b.type === 'tip') return '<div class="tip-block">' + esc(b.text).replace(/\n/g, '<br />') + '</div>';
+      if (b.type === 'forbidden') return '<div class="tip-block forbidden">' + esc(b.text).replace(/\n/g, '<br />') + '</div>';
+      if (b.type === 'table') {
+        return '<div class="table-wrap"><table><thead><tr><th>阶段</th><th>时长</th><th>速度</th><th>坡度</th><th>目标心率</th></tr></thead><tbody>' +
+          (b.rows || []).map(r => '<tr>' + [0, 1, 2, 3, 4].map(k => '<td>' + esc(r[k]) + '</td>').join('') + '</tr>').join('') +
+          '</tbody></table></div>';
+      }
+      if (b.type === 'rule') {
+        return '<div class="rule-box"><strong>' + esc(b.heading) + '</strong><ul>' +
+          (b.items || []).map(i => '<li>' + esc(i) + '</li>').join('') +
+          '</ul><div>' + esc(b.note) + '</div></div>';
+      }
+      return '';
+    }
+
+    async function loadPlan() {
+      plan = null;
+      try {
+        const c = JSON.parse(localStorage.getItem('planData:' + userName));
+        if (c && c.days) plan = c;
+      } catch (e) { }
+      if (SUPA_CONFIG.url && SUPA_CONFIG.anonKey) {
+        try {
+          const rows = await sbFetch('plans?select=plan&user_name=eq.' + encodeURIComponent(userName));
+          if (rows && rows.length && rows[0].plan && rows[0].plan.days) {
+            plan = rows[0].plan;
+            localStorage.setItem('planData:' + userName, JSON.stringify(plan));
+          }
+        } catch (e) { }
+      }
+      if (!plan) plan = JSON.parse(JSON.stringify(DEFAULT_PLAN));
+    }
+
+    async function savePlanToCloud() {
+      localStorage.setItem('planData:' + userName, JSON.stringify(plan));
+      if (SUPA_CONFIG.url && SUPA_CONFIG.anonKey) {
+        try {
+          await sbFetch('plans?on_conflict=user_name', {
+            method: 'POST',
+            headers: { Prefer: 'resolution=merge-duplicates,return=minimal' },
+            body: JSON.stringify([{ user_name: userName, plan: plan }])
+          });
+          toast('计划已保存到云端');
+        } catch (e) {
+          toast('云端保存失败，计划暂存本地');
+        }
+      } else {
+        toast('计划已保存到本地');
+      }
+    }
+
+    function openEditor() {
+      editorPlan = JSON.parse(JSON.stringify(plan));
+      editDay = DAYS[(new Date().getDay() + 6) % 7];
+      document.getElementById('editMask').hidden = false;
+      renderEditor();
+    }
+
+    function edBlockHTML(b, i) {
+      let body = '';
+      const head = '<div class="ed-block-type"><span>' + (BLOCK_NAMES[b.type] || b.type) + '</span><button class="ed-del" data-delblock="' + i + '">删除此块</button></div>';
+      if (b.type === 'exercises') {
+        body = (b.items || []).map((it, j) =>
+          '<div class="ed-item">' +
+          '<div class="ed-grid2">' +
+          '<input class="ed-input" data-j="' + j + '" data-f="name" placeholder="动作名" value="' + escAttr(it.name) + '">' +
+          '<input class="ed-input" data-j="' + j + '" data-f="sets" placeholder="组数，如：3组 × 12次" value="' + escAttr(it.sets) + '">' +
+          '</div>' +
+          '<div class="ed-grid2" style="margin-top:6px;">' +
+          '<input class="ed-input" data-j="' + j + '" data-f="videoLabel" placeholder="视频文字（可空）" value="' + escAttr(it.videoLabel) + '">' +
+          '<input class="ed-input" data-j="' + j + '" data-f="videoUrl" placeholder="视频链接（可空）" value="' + escAttr(it.videoUrl) + '">' +
+          '</div>' +
+          '<button class="ed-del" data-delitem="' + j + '" style="margin-top:6px;">删除动作</button>' +
+          '</div>'
+        ).join('');
+        body += '<button class="ed-add" data-additem="1">＋ 添加动作</button>';
+      } else if (b.type === 'tip' || b.type === 'forbidden') {
+        body = '<textarea class="ed-area" rows="3" data-f="text">' + esc(b.text) + '</textarea><div class="ed-hint">每行一条，会按行显示</div>';
+      } else if (b.type === 'table') {
+        body = '<div class="ed-hint">5 列固定为：阶段 / 时长 / 速度 / 坡度 / 目标心率</div>' +
+          (b.rows || []).map((r, j) => '<div class="ed-grid5">' +
+            [0, 1, 2, 3, 4].map(k => '<input class="ed-input" data-r="' + j + '" data-c="' + k + '" value="' + escAttr(r[k]) + '">').join('') +
+            '</div>').join('') +
+          '<div style="display:flex;gap:8px;margin-top:4px;">' +
+          '<button class="ed-add" data-addrow="1">＋ 添加行</button>' +
+          '<button class="ed-del" data-delrow="1">删除末行</button></div>';
+      } else if (b.type === 'rule') {
+        body = '<input class="ed-input" data-f="heading" placeholder="规则标题" value="' + escAttr(b.heading) + '">' +
+          '<textarea class="ed-area" rows="3" data-f="items" style="margin-top:6px;">' + esc((b.items || []).join('\n')) + '</textarea>' +
+          '<div class="ed-hint">每行一条规则</div>' +
+          '<input class="ed-input" data-f="note" placeholder="底部说明（可空）" value="' + escAttr(b.note) + '" style="margin-top:6px;">';
+      }
+      return '<div class="ed-block" data-block="' + i + '">' + head + body + '</div>';
+    }
+
+    function renderEditor() {
+      const tabsEl = document.getElementById('edTabs');
+      tabsEl.innerHTML = DAYS.map(d =>
+        '<button class="ed-tab' + (d === editDay ? ' on' : '') + '" data-day="' + d + '">周' + DAY_NAMES[d] + '</button>'
+      ).join('');
+      tabsEl.querySelectorAll('.ed-tab').forEach(b => {
+        b.onclick = function () { editDay = this.dataset.day; renderEditor(); };
+      });
+
+      const day = editorPlan.days[editDay] = editorPlan.days[editDay] || { title: '', subtitle: '', blocks: [] };
+      day.blocks = day.blocks || [];
+      document.getElementById('edBody').innerHTML =
+        '<label class="ed-label">卡片标题（如：周一｜下肢力量）</label>' +
+        '<input class="ed-input" id="edTitle" value="' + escAttr(day.title) + '">' +
+        '<label class="ed-label">右侧说明（如：总时长：40分钟，可留空）</label>' +
+        '<input class="ed-input" id="edSub" value="' + escAttr(day.subtitle || '') + '">' +
+        '<div id="edBlocks"></div>' +
+        '<div class="ed-add-row">' +
+        '<button class="ed-add" data-t="exercises">＋ 动作列表</button>' +
+        '<button class="ed-add" data-t="tip">＋ 提示</button>' +
+        '<button class="ed-add" data-t="forbidden">＋ 禁止提示</button>' +
+        '<button class="ed-add" data-t="table">＋ 心率表格</button>' +
+        '<button class="ed-add" data-t="rule">＋ 规则框</button>' +
+        '</div>';
+
+      document.getElementById('edTitle').oninput = e => { day.title = e.target.value; };
+      document.getElementById('edSub').oninput = e => { day.subtitle = e.target.value; };
+
+      const blocksEl = document.getElementById('edBlocks');
+      blocksEl.innerHTML = day.blocks.map((b, i) => edBlockHTML(b, i)).join('');
+
+      day.blocks.forEach((b, i) => {
+        const el = blocksEl.querySelector('.ed-block[data-block="' + i + '"]');
+        if (!el) return;
+        el.querySelector('[data-delblock]').onclick = function () { day.blocks.splice(i, 1); renderEditor(); };
+        if (b.type === 'exercises') {
+          el.querySelectorAll('[data-f]').forEach(inp => {
+            inp.oninput = function () { b.items[+this.dataset.j][this.dataset.f] = this.value; };
+          });
+          const addBtn = el.querySelector('[data-additem]');
+          if (addBtn) addBtn.onclick = function () { b.items.push({ name: '', sets: '', videoLabel: '', videoUrl: '' }); renderEditor(); };
+          el.querySelectorAll('[data-delitem]').forEach(db => {
+            db.onclick = function () { b.items.splice(+this.dataset.delitem, 1); renderEditor(); };
+          });
+        } else if (b.type === 'tip' || b.type === 'forbidden') {
+          el.querySelector('[data-f="text"]').oninput = e => { b.text = e.target.value; };
+        } else if (b.type === 'table') {
+          el.querySelectorAll('[data-r]').forEach(inp => {
+            inp.oninput = function () { b.rows[+this.dataset.r][+this.dataset.c] = this.value; };
+          });
+          const addRow = el.querySelector('[data-addrow]');
+          if (addRow) addRow.onclick = function () { b.rows.push(['', '', '', '', '']); renderEditor(); };
+          const delRow = el.querySelector('[data-delrow]');
+          if (delRow) delRow.onclick = function () { b.rows.pop(); renderEditor(); };
+        } else if (b.type === 'rule') {
+          el.querySelector('[data-f="heading"]').oninput = e => { b.heading = e.target.value; };
+          el.querySelector('[data-f="items"]').oninput = e => { b.items = e.target.value.split('\n'); };
+          el.querySelector('[data-f="note"]').oninput = e => { b.note = e.target.value; };
+        }
+      });
+
+      document.querySelectorAll('#edBody .ed-add[data-t]').forEach(btn => {
+        btn.onclick = function () {
+          const t = this.dataset.t;
+          const nb = t === 'exercises' ? { type: 'exercises', items: [{ name: '', sets: '', videoLabel: '', videoUrl: '' }] }
+            : t === 'table' ? { type: 'table', rows: [['', '', '', '', '']] }
+              : t === 'rule' ? { type: 'rule', heading: '', items: [''], note: '' }
+                : { type: t, text: '' };
+          day.blocks.push(nb);
+          renderEditor();
+        };
+      });
+    }
+
+    document.getElementById('editPlanBtn').addEventListener('click', openEditor);
+    document.getElementById('editClose').addEventListener('click', function () { document.getElementById('editMask').hidden = true; });
+    document.getElementById('editCancel').addEventListener('click', function () { document.getElementById('editMask').hidden = true; });
+    document.getElementById('editReset').addEventListener('click', function () {
+      if (confirm('确定恢复为内置默认计划？未保存的修改会丢失。')) {
+        editorPlan = JSON.parse(JSON.stringify(DEFAULT_PLAN));
+        renderEditor();
+      }
+    });
+    document.getElementById('editSave').addEventListener('click', async function () {
+      const bad = DAYS.find(d => !editorPlan.days[d] || !String(editorPlan.days[d].title || '').trim());
+      if (bad) { toast('周' + DAY_NAMES[bad] + '的标题不能为空'); return; }
+      plan = editorPlan;
+      editorPlan = null;
+      document.getElementById('editMask').hidden = true;
+      render();
+      await savePlanToCloud();
+    });
+
+    // 一进页面先选人，再看打卡情况
+    openUserModal(async function () {
+      await loadPlan();
+      await initData();
+      render();
+    });
+  </script>
+</body>
+
+</html>
