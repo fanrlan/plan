@@ -349,6 +349,42 @@
       display: none;
     }
 
+    .loading-mask {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 14, 22, 0.72);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      z-index: 200;
+    }
+
+    .loading-mask[hidden] {
+      display: none;
+    }
+
+    .loading-spinner {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 3px solid rgba(66, 165, 255, 0.2);
+      border-top-color: #42a5ff;
+      animation: loading-spin 0.8s linear infinite;
+    }
+
+    @keyframes loading-spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .loading-text {
+      font-size: 14px;
+      color: #9fb0c3;
+    }
+
     .user-modal {
       width: min(320px, 86vw);
       background: #1c2433;
@@ -691,6 +727,11 @@
         <button class="user-option" data-name="王华莹">王华莹</button>
       </div>
     </div>
+  </div>
+
+  <div class="loading-mask" id="loadingMask" hidden>
+    <div class="loading-spinner"></div>
+    <div class="loading-text" id="loadingText">加载中…</div>
   </div>
 
   <div class="user-mask" id="editMask" hidden>
@@ -1102,6 +1143,16 @@
       render();
     }
 
+    // ---- Loading 遮罩 ----
+    function showLoading(text) {
+      document.getElementById('loadingText').textContent = text || '加载中…';
+      document.getElementById('loadingMask').hidden = false;
+    }
+
+    function hideLoading() {
+      document.getElementById('loadingMask').hidden = true;
+    }
+
     // ---- 身份（两人各看各的）----
     function openUserModal(done) {
       const mask = document.getElementById('userMask');
@@ -1121,8 +1172,11 @@
     document.getElementById('userSwitch').addEventListener('click', function () {
       openUserModal(async function (changed) {
         if (changed) {
-          await loadPlan();
-          await initData();
+          showLoading('正在加载「' + userName + '」的数据…');
+          try {
+            await loadPlan();
+            await initData();
+          } finally { hideLoading(); }
           render();
         }
       });
@@ -1338,8 +1392,11 @@
 
     // 一进页面先选人，再看打卡情况
     openUserModal(async function () {
-      await loadPlan();
-      await initData();
+      showLoading('正在加载「' + userName + '」的数据…');
+      try {
+        await loadPlan();
+        await initData();
+      } finally { hideLoading(); }
       render();
     });
   </script>
