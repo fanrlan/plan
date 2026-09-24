@@ -641,6 +641,9 @@
       left: 50%;
       bottom: 28px;
       transform: translateX(-50%) translateY(8px);
+      max-width: 90vw;
+      text-align: center;
+      line-height: 1.5;
       background: #273042;
       border: 1px solid #2c384e;
       color: #e8edf3;
@@ -936,12 +939,12 @@
       });
     }
 
-    function toast(msg) {
+    function toast(msg, ms) {
       const el = document.getElementById('toast');
       el.textContent = msg;
       el.classList.add('show');
       clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => el.classList.remove('show'), 2600);
+      toastTimer = setTimeout(() => el.classList.remove('show'), ms || 2600);
     }
 
     // ---- 存储 ----
@@ -958,7 +961,11 @@
     }
 
     function saveLocal() {
-      localStorage.setItem(localKey(), JSON.stringify(checkIns));
+      try {
+        localStorage.setItem(localKey(), JSON.stringify(checkIns));
+      } catch (e) {
+        // 隐私模式/存储被禁时写不进去，忽略即可，云端才是准的
+      }
     }
 
     async function sbFetch(path, options) {
@@ -970,7 +977,10 @@
           'Content-Type': 'application/json'
         }, options.headers)
       }));
-      if (!res.ok) throw new Error('Supabase ' + res.status);
+      if (!res.ok) {
+        const body = await res.text().catch(() => '');
+        throw new Error('HTTP ' + res.status + (body ? ' ' + body.replace(/\s+/g, ' ').slice(0, 100) : ''));
+      }
       if (res.status === 204) return null;
       const text = await res.text();
       return text ? JSON.parse(text) : null;
@@ -988,7 +998,7 @@
           saveLocal(); // 本地留一份缓存
           return;
         } catch (e) {
-          toast('云端连接失败，使用本地数据');
+          toast('云端连接失败：' + (e && e.message ? e.message : e), 8000);
         }
       }
       checkIns = loadLocal();
