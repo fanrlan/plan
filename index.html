@@ -4,6 +4,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#121721">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="周训练计划">
+  <link rel="icon"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23121721'/%3E%3Cpath d='M18 34l10 10 18-21' fill='none' stroke='%2342a5ff' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
   <title>全身周训练完整计划表</title>
   <style>
     * {
@@ -308,6 +314,13 @@
       margin-bottom: 12px;
     }
 
+    .checkin-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
     .checkin-stats {
       display: flex;
       flex-wrap: wrap;
@@ -578,6 +591,7 @@
 
     .ed-foot {
       display: flex;
+      flex-wrap: wrap;
       gap: 10px;
       justify-content: flex-end;
       margin-top: 16px;
@@ -741,6 +755,18 @@
       color: #9fb0c3;
     }
 
+    .cal-cell.pick {
+      cursor: pointer;
+    }
+
+    .cal-cell.pick:hover {
+      border-color: rgba(66, 165, 255, 0.5);
+    }
+
+    .cal-cell.pick.today:hover {
+      border-color: #42a5ff;
+    }
+
     .cal-cell.empty {
       visibility: hidden;
     }
@@ -783,6 +809,44 @@
       gap: 4px;
     }
 
+    /* ===== 日期详情（补卡 / 改备注）===== */
+    #dayMask {
+      z-index: 150;
+    }
+
+    .day-panel {
+      width: min(380px, 92vw);
+      background: #1c2433;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 16px 18px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    .day-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 13px;
+      color: #9fb0c3;
+      background: #232c3d;
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+
+    .day-meta b {
+      color: #e8edf3;
+    }
+
+    .day-panel .ed-area {
+      margin-top: 2px;
+    }
+
+    /* 窄屏下心率表格折成 2 列，给每个输入补齐列名 */
+    .ed-cell-label {
+      display: none;
+    }
+
     @media(max-width:600px) {
       .week-grid {
         gap: 4px;
@@ -798,12 +862,25 @@
         gap: 12px;
       }
 
+      /* 窄屏下按钮组单独占一行并靠左，不再被挤到右边 */
+      .checkin-actions {
+        flex-basis: 100%;
+        justify-content: flex-start;
+      }
+
       .ed-grid2 {
         grid-template-columns: 1fr;
       }
 
       .ed-grid5 {
         grid-template-columns: repeat(2, 1fr);
+      }
+
+      .ed-cell-label {
+        display: block;
+        font-size: 11px;
+        color: #9fb0c3;
+        margin-bottom: 3px;
       }
 
       body {
@@ -834,7 +911,7 @@
   <div class="checkin-overview">
     <div class="checkin-head">
       <div class="checkin-stats" id="checkinStats"></div>
-      <div style="display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px;">
+      <div class="checkin-actions">
         <button class="user-badge" id="calBtn">📅 打卡日历</button>
         <button class="user-badge" id="editPlanBtn">✏️ 编辑计划</button>
         <button class="user-badge" id="userSwitch" title="切换/修改身份">👤 <span id="userNameLabel"></span></button>
@@ -875,6 +952,25 @@
     </div>
   </div>
 
+  <div class="user-mask" id="dayMask" hidden>
+    <div class="day-panel">
+      <div class="edit-head">
+        <span class="edit-title" id="dayTitle"></span>
+        <button class="ed-close" id="dayClose">×</button>
+      </div>
+      <div class="day-meta" id="dayMeta"></div>
+      <label class="ed-label">备注（体重、感受、完成情况，可留空）</label>
+      <textarea class="ed-area" id="dayNote" rows="3" placeholder="例：体重 58.2，状态不错，最后一组有点吃力"></textarea>
+      <div class="ed-hint" id="dayHint">修改已有记录时，打卡时间保持不变</div>
+      <div class="ed-foot">
+        <button class="ed-btn danger" id="dayRemove" hidden>取消打卡</button>
+        <button class="ed-btn ghost" id="dayToPlan">查看计划</button>
+        <button class="ed-btn ghost" id="dayCancel">关闭</button>
+        <button class="ed-btn primary" id="daySave">保存</button>
+      </div>
+    </div>
+  </div>
+
   <div class="loading-mask" id="loadingMask" hidden>
     <div class="loading-spinner"></div>
     <div class="loading-text" id="loadingText">加载中…</div>
@@ -909,6 +1005,8 @@
           alter table checkins add primary key (user_name, date);
           alter table checkins enable row level security;
           create policy "anon_all" on checkins for all to anon using (true) with check (true);
+          「打卡备注」功能还需要 note 列（没执行也不影响打卡，只影响备注保存）：
+          alter table checkins add column if not exists note text;
           「编辑计划」功能还需要建 plans 表：
           create table if not exists plans (
             user_name text primary key,
@@ -928,8 +1026,18 @@
     const DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
     const DAY_NAMES = { monday: '一', tuesday: '二', wednesday: '三', thursday: '四', friday: '五', saturday: '六', sunday: '日' };
 
-    let userName = localStorage.getItem('planUserName') || '';
-    let checkIns = {};        // { 'YYYY-MM-DD': { day, time } } 当前用户的记录
+    /* 存储安全包装：部分浏览器（隐私模式、禁用 Cookie 等）访问 localStorage 会直接抛
+       SecurityError，裸调会让整个脚本停摆。这里统一吞掉，云端数据才是准的 */
+    function lsGet(key) {
+      try { return localStorage.getItem(key); } catch (e) { return null; }
+    }
+
+    function lsSet(key, val) {
+      try { localStorage.setItem(key, val); return true; } catch (e) { return false; }
+    }
+
+    let userName = lsGet('planUserName') || '';
+    let checkIns = {};        // { 'YYYY-MM-DD': { day, time, note } } 当前用户的记录
     let cloudAvailable = false;
     let busy = false;
     let toastTimer;
@@ -1079,6 +1187,15 @@
       });
     }
 
+    // 'YYYY-MM-DD' → Date。不走 new Date(str)，避免被当成 UTC 解析导致星期错位
+    function parseDate(ds) {
+      const p = String(ds).split('-');
+      return new Date(+p[0], +p[1] - 1, +p[2]);
+    }
+
+    const dayOfDate = d => DAYS[(d.getDay() + 6) % 7];       // 周一=0 … 周日=6
+    const dayOfDateStr = ds => dayOfDate(parseDate(ds));
+
     function toast(msg, ms) {
       const el = document.getElementById('toast');
       el.textContent = msg;
@@ -1094,18 +1211,14 @@
 
     function loadLocal() {
       try {
-        return JSON.parse(localStorage.getItem(localKey())) || {};
+        return JSON.parse(lsGet(localKey())) || {};
       } catch (e) {
         return {};
       }
     }
 
     function saveLocal() {
-      try {
-        localStorage.setItem(localKey(), JSON.stringify(checkIns));
-      } catch (e) {
-        // 隐私模式/存储被禁时写不进去，忽略即可，云端才是准的
-      }
+      lsSet(localKey(), JSON.stringify(checkIns));
     }
 
     async function sbFetch(path, options) {
@@ -1129,10 +1242,11 @@
     async function initData() {
       if (SUPA_CONFIG.url && SUPA_CONFIG.anonKey) {
         try {
-          const rows = await sbFetch('checkins?select=date,day,time&user_name=eq.' + encodeURIComponent(userName) + '&limit=1000');
+          // select=* 而不是写死列名：note 列还没建时也能正常读到数据
+          const rows = await sbFetch('checkins?select=*&user_name=eq.' + encodeURIComponent(userName) + '&limit=1000');
           checkIns = {};
           (rows || []).forEach(r => {
-            if (r.date) checkIns[r.date] = { day: r.day, time: r.time };
+            if (r.date) checkIns[r.date] = { day: r.day, time: r.time, note: r.note || '' };
           });
           cloudAvailable = true;
           saveLocal(); // 本地留一份缓存
@@ -1144,20 +1258,36 @@
       checkIns = loadLocal();
     }
 
-    async function addCheckIn(date, day) {
-      const rec = { day: day, time: fmtTime() };
+    // 保存打卡：已有记录保留原本的打卡时间，只改备注；新记录用当前时间
+    async function saveCheckIn(date, day, note) {
+      const prev = checkIns[date];
+      const rec = { day: day, time: prev ? prev.time : fmtTime(), note: note };
       checkIns[date] = rec;
       saveLocal();
       render();
-      if (cloudAvailable) {
+      if (!cloudAvailable) return;
+
+      const post = row => sbFetch('checkins?on_conflict=user_name,date', {
+        method: 'POST',
+        headers: { Prefer: 'resolution=merge-duplicates,return=minimal' },
+        body: JSON.stringify([row])
+      });
+      const row = { user_name: userName, date: date, day: rec.day, time: rec.time, note: note };
+      try {
+        await post(row);
+      } catch (e) {
+        // note 列还没建时整条都会存不进去，退回不带备注，保证打卡本身不受影响
+        if (!/note/.test(String(e.message))) {
+          toast('云端保存失败，先记录在本地：' + (e && e.message ? e.message : e), 6000);
+          return;
+        }
+        const bare = Object.assign({}, row);
+        delete bare.note;
         try {
-          await sbFetch('checkins?on_conflict=user_name,date', {
-            method: 'POST',
-            headers: { Prefer: 'resolution=merge-duplicates,return=minimal' },
-            body: JSON.stringify([{ user_name: userName, date: date, day: rec.day, time: rec.time }])
-          });
-        } catch (e) {
-          toast('云端保存失败，先记录在本地');
+          await post(bare);
+          toast('备注未保存：请先在 Supabase 执行 alter table checkins add column note text;', 8000);
+        } catch (e2) {
+          toast('云端保存失败，先记录在本地：' + (e2 && e2.message ? e2.message : e2), 6000);
         }
       }
     }
@@ -1196,7 +1326,7 @@
       const d = plan && plan.days ? plan.days[viewDay] : null;
       const area = document.getElementById('planArea');
       const banner = viewDay !== todayDay
-        ? '<div class="view-banner">正在查看 <b>周' + DAY_NAMES[viewDay] + '</b> 的计划，打卡仅限当天 · <a href="javascript:void(0)" id="backToday" style="color:#42a5ff;">回到今天</a></div>'
+        ? '<div class="view-banner">正在查看 <b>周' + DAY_NAMES[viewDay] + '</b> 的计划 · 补卡请点「📅 打卡日历」· <a href="javascript:void(0)" id="backToday" style="color:#42a5ff;">回到今天</a></div>'
         : '';
       if (!d) { area.innerHTML = banner; return; }
       area.innerHTML = banner + '<div class="card ' + viewDay + '">' +
@@ -1262,40 +1392,101 @@
         '<span>👤 <b>' + userName + '</b></span><span>📅 本周 <b>' + weekDone + '</b>/7 天</span><span>🔥 连续打卡 <b>' + streak + '</b> 天</span>' + histHTML;
     }
 
+    // 打卡按钮只出现在「今天」对应的卡片上，其余日期补卡走「打卡日历」
     function renderButtons() {
+      if (!viewDay) return;
+      const card = document.querySelector('.card.' + viewDay);
+      if (!card) return;
+      let btn = card.querySelector('.checkin-btn');
+      if (!btn) {
+        btn = document.createElement('button');
+        btn.className = 'checkin-btn';
+        card.querySelector('.card-title').appendChild(btn);
+      }
       const today = todayStr();
-      const todayDay = DAYS[(new Date().getDay() + 6) % 7]; // 周一=0 … 周日=6
-      DAYS.forEach(day => {
-        const card = document.querySelector('.card.' + day);
-        if (!card) return;
-        let btn = card.querySelector('.checkin-btn');
-        if (!btn) {
-          btn = document.createElement('button');
-          btn.className = 'checkin-btn';
-          btn.addEventListener('click', function () { toggle(day); });
-          card.querySelector('.card-title').appendChild(btn);
-        }
-        const rec = checkIns[today];
-        const isToday = day === todayDay;
-        const active = isToday && !!rec && rec.day === day;
-        btn.classList.toggle('active', active);
-        btn.disabled = busy || !isToday;
-        btn.title = isToday ? '' : '只能在今天对应的卡片打卡';
-        btn.textContent = active ? '✓ 已打卡 ' + rec.time : (isToday ? '打卡' : '非今日');
-      });
+      const isToday = viewDay === dayOfDate(new Date());
+      btn.hidden = !isToday;
+      btn.onclick = function () { openDayEditor(today); };
+      if (!isToday) return;
+      const rec = checkIns[today];
+      btn.classList.toggle('active', !!rec);
+      btn.disabled = busy;
+      btn.textContent = rec ? '✓ 已打卡 ' + rec.time : '打卡';
     }
 
-    async function toggle(day) {
-      const todayDay = DAYS[(new Date().getDay() + 6) % 7];
-      if (busy || day !== todayDay) return; // 只允许给今天打卡
-      busy = true;
-      renderButtons();
-      const date = todayStr();
-      if (checkIns[date] && checkIns[date].day === day) await removeCheckIn(date);
-      else await addCheckIn(date, day);
-      busy = false;
-      render();
+    // ---- 日期详情：查看/补卡/改备注 ----
+    let dayEdit = null; // 正在编辑的日期 'YYYY-MM-DD'
+
+    function openDayEditor(date) {
+      if (busy || date > todayStr()) return; // 未来日期不能打卡
+      dayEdit = date;
+      const day = dayOfDateStr(date);
+      const d = parseDate(date);
+      const rec = checkIns[date];
+      const pd = plan && plan.days ? plan.days[day] : null;
+
+      document.getElementById('dayTitle').textContent =
+        (d.getMonth() + 1) + '月' + d.getDate() + '日 周' + DAY_NAMES[day];
+      document.getElementById('dayMeta').innerHTML =
+        '<div>计划：<b>' + esc(pd && pd.title ? pd.title : '周' + DAY_NAMES[day]) + '</b></div>' +
+        (rec ? '<div>打卡时间：' + esc(rec.time || '') + '</div>' : '<div>还没打卡</div>');
+      document.getElementById('dayNote').value = rec ? (rec.note || '') : '';
+      document.getElementById('dayRemove').hidden = !rec;
+      // 有记录就是改备注；没记录时按日期区分：今天叫打卡，过去叫补卡
+      document.getElementById('daySave').textContent =
+        rec ? '保存' : (date === todayStr() ? '打卡' : '补卡');
+      document.getElementById('dayHint').textContent =
+        rec ? '修改已有记录时，打卡时间保持不变' : '备注可留空，只记一条打卡也行';
+      document.getElementById('dayMask').hidden = false;
     }
+
+    function closeDayEditor() {
+      document.getElementById('dayMask').hidden = true;
+      dayEdit = null;
+    }
+
+    async function saveDayEditor() {
+      if (busy || !dayEdit) return;
+      busy = true;
+      document.getElementById('daySave').disabled = true;
+      try {
+        await saveCheckIn(dayEdit, dayOfDateStr(dayEdit), document.getElementById('dayNote').value.trim());
+      } finally {
+        busy = false;
+        document.getElementById('daySave').disabled = false;
+      }
+      closeDayEditor();
+      renderButtons(); // 保存期间 busy=true，按钮会被置灰，这里恢复
+    }
+
+    async function removeDayEditor() {
+      if (busy || !dayEdit) return;
+      busy = true;
+      try {
+        await removeCheckIn(dayEdit);
+      } finally {
+        busy = false;
+      }
+      closeDayEditor();
+      renderButtons();
+    }
+
+    // 从日期详情跳到那天的计划卡片
+    function gotoPlanOfDay(day) {
+      viewDay = day;
+      closeDayEditor();
+      document.getElementById('calMask').hidden = true;
+      render();
+      document.getElementById('planArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    document.getElementById('dayClose').addEventListener('click', closeDayEditor);
+    document.getElementById('dayCancel').addEventListener('click', closeDayEditor);
+    document.getElementById('daySave').addEventListener('click', saveDayEditor);
+    document.getElementById('dayRemove').addEventListener('click', removeDayEditor);
+    document.getElementById('dayToPlan').addEventListener('click', function () {
+      if (dayEdit) gotoPlanOfDay(dayOfDateStr(dayEdit));
+    });
 
     // ---- 打卡日历（查看历史打卡日子）----
     // 圆点颜色 = 当天练的部位，和卡片左侧色条一致
@@ -1325,14 +1516,22 @@
         const ds = fmtDate(new Date(y, m, d));
         const rec = checkIns[ds];
         const cls = ['cal-cell'];
+        const pickable = ds <= today;   // 今天及以前可点开补卡/改备注
         if (rec) cls.push('done');
         if (ds === today) cls.push('today');
-        else if (ds > today) cls.push('future');
+        else if (!pickable) cls.push('future');
+        if (pickable) cls.push('pick');
         const dot = rec ? '<span class="cal-dot" style="background:' + (DAY_COLORS[rec.day] || '#42a5ff') + '"></span>' : '';
-        const tip = ds + (rec ? ' ' + escAttr(rec.time) + ' 周' + (DAY_NAMES[rec.day] || '') : ' 未打卡');
-        html += '<div class="' + cls.join(' ') + '" title="' + tip + '"><span>' + d + '</span>' + dot + '</div>';
+        const tip = ds + (rec
+          ? ' ' + escAttr(rec.time) + ' 周' + (DAY_NAMES[rec.day] || '') + (rec.note ? ' · ' + escAttr(rec.note) : '')
+          : ' 未打卡');
+        html += '<div class="' + cls.join(' ') + '"' + (pickable ? ' data-date="' + ds + '"' : '') +
+          ' title="' + tip + '"><span>' + d + '</span>' + dot + '</div>';
       }
       document.getElementById('calGrid').innerHTML = html;
+      document.querySelectorAll('#calGrid .cal-cell[data-date]').forEach(el => {
+        el.addEventListener('click', function () { openDayEditor(this.dataset.date); });
+      });
 
       const monthCount = Object.keys(checkIns).filter(ds => ds.slice(0, 7) === y + '-' + String(m + 1).padStart(2, '0')).length;
       document.getElementById('calSummary').innerHTML =
@@ -1374,7 +1573,7 @@
         btn.onclick = function () {
           const changed = userName !== this.dataset.name;
           userName = this.dataset.name;
-          localStorage.setItem('planUserName', userName);
+          lsSet('planUserName', userName);
           mask.hidden = true;
           renderUser();
           done && done(changed);
@@ -1399,6 +1598,7 @@
 
     // ---- 计划（每人一份，存云端 plans 表，页面内编辑）----
     const BLOCK_NAMES = { exercises: '动作列表', tip: '提示', forbidden: '禁止提示', table: '心率表格', rule: '规则框' };
+    const TABLE_COLS = ['阶段', '时长', '速度', '坡度', '目标心率'];
 
     function esc(s) {
       return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -1435,7 +1635,7 @@
     async function loadPlan() {
       plan = null;
       try {
-        const c = JSON.parse(localStorage.getItem('planData:' + userName));
+        const c = JSON.parse(lsGet('planData:' + userName));
         if (c && c.days) plan = c;
       } catch (e) { }
       if (SUPA_CONFIG.url && SUPA_CONFIG.anonKey) {
@@ -1443,7 +1643,7 @@
           const rows = await sbFetch('plans?select=plan&user_name=eq.' + encodeURIComponent(userName));
           if (rows && rows.length && rows[0].plan && rows[0].plan.days) {
             plan = rows[0].plan;
-            localStorage.setItem('planData:' + userName, JSON.stringify(plan));
+            lsSet('planData:' + userName, JSON.stringify(plan));
           }
         } catch (e) { }
       }
@@ -1451,7 +1651,7 @@
     }
 
     async function savePlanToCloud() {
-      localStorage.setItem('planData:' + userName, JSON.stringify(plan));
+      const localOk = lsSet('planData:' + userName, JSON.stringify(plan));
       if (SUPA_CONFIG.url && SUPA_CONFIG.anonKey) {
         try {
           await sbFetch('plans?on_conflict=user_name', {
@@ -1461,11 +1661,12 @@
           });
           toast('计划已保存到云端');
         } catch (e) {
-          toast('云端保存失败，计划暂存本地');
+          toast('云端保存失败，计划暂存本地：' + (e && e.message ? e.message : e), 6000);
         }
       } else {
         toast('计划已保存到本地');
       }
+      if (!localOk) toast('本机存储不可用，计划未能保存到本地', 5000);
     }
 
     function openEditor() {
@@ -1498,7 +1699,8 @@
       } else if (b.type === 'table') {
         body = '<div class="ed-hint">5 列固定为：阶段 / 时长 / 速度 / 坡度 / 目标心率</div>' +
           (b.rows || []).map((r, j) => '<div class="ed-grid5">' +
-            [0, 1, 2, 3, 4].map(k => '<input class="ed-input" data-r="' + j + '" data-c="' + k + '" value="' + escAttr(r[k]) + '">').join('') +
+            TABLE_COLS.map((col, k) => '<div class="ed-cell"><span class="ed-cell-label">' + col + '</span>' +
+              '<input class="ed-input" data-r="' + j + '" data-c="' + k + '" value="' + escAttr(r[k]) + '"></div>').join('') +
             '</div>').join('') +
           '<div style="display:flex;gap:8px;margin-top:4px;">' +
           '<button class="ed-add" data-addrow="1">＋ 添加行</button>' +
