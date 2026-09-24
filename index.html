@@ -661,6 +661,128 @@
       transform: translateX(-50%) translateY(0);
     }
 
+    /* ===== 打卡日历 ===== */
+    .cal-panel {
+      width: min(360px, 92vw);
+      background: #1c2433;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 16px 18px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    .cal-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .cal-title {
+      flex: 1;
+      text-align: center;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .cal-nav {
+      width: 28px;
+      height: 28px;
+      flex: none;
+      border-radius: 8px;
+      border: 1px solid #2c384e;
+      background: #232c3d;
+      color: #9fb0c3;
+      font-size: 16px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .cal-nav:hover {
+      border-color: #42a5ff;
+      color: #42a5ff;
+    }
+
+    .cal-summary {
+      text-align: center;
+      font-size: 12px;
+      color: #9fb0c3;
+      margin-bottom: 12px;
+    }
+
+    .cal-summary b {
+      color: #42a5ff;
+    }
+
+    .cal-week,
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+    }
+
+    .cal-week {
+      text-align: center;
+      font-size: 12px;
+      color: #9fb0c3;
+      margin-bottom: 4px;
+    }
+
+    .cal-cell {
+      aspect-ratio: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      font-size: 13px;
+      color: #9fb0c3;
+    }
+
+    .cal-cell.empty {
+      visibility: hidden;
+    }
+
+    .cal-cell.future {
+      opacity: 0.4;
+    }
+
+    .cal-cell.done {
+      background: rgba(66, 185, 131, 0.12);
+      border-color: rgba(66, 185, 131, 0.45);
+      color: #7ee2b8;
+      font-weight: 600;
+    }
+
+    .cal-cell.today {
+      box-shadow: inset 0 0 0 1px #42a5ff;
+      color: #e8edf3;
+    }
+
+    .cal-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+    }
+
+    .cal-legend {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 4px 10px;
+      margin-top: 12px;
+      font-size: 11px;
+      color: #9fb0c3;
+    }
+
+    .cal-legend>span {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
     @media(max-width:600px) {
       .week-grid {
         gap: 4px;
@@ -712,7 +834,8 @@
   <div class="checkin-overview">
     <div class="checkin-head">
       <div class="checkin-stats" id="checkinStats"></div>
-      <div style="display:flex;gap:8px;">
+      <div style="display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px;">
+        <button class="user-badge" id="calBtn">📅 打卡日历</button>
         <button class="user-badge" id="editPlanBtn">✏️ 编辑计划</button>
         <button class="user-badge" id="userSwitch" title="切换/修改身份">👤 <span id="userNameLabel"></span></button>
       </div>
@@ -732,6 +855,23 @@
         <button class="user-option" data-name="范若兰">范若兰</button>
         <button class="user-option" data-name="王华莹">王华莹</button>
       </div>
+    </div>
+  </div>
+
+  <div class="user-mask" id="calMask" hidden>
+    <div class="cal-panel">
+      <div class="cal-head">
+        <button class="cal-nav" id="calPrev">‹</button>
+        <span class="cal-title" id="calTitle"></span>
+        <button class="cal-nav" id="calNext">›</button>
+        <button class="ed-close" id="calClose">×</button>
+      </div>
+      <div class="cal-summary" id="calSummary"></div>
+      <div class="cal-week">
+        <span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+      <div class="cal-legend" id="calLegend"></div>
     </div>
   </div>
 
@@ -1042,6 +1182,7 @@
       renderStats();
       renderTodayCard();
       renderButtons();
+      if (!document.getElementById('calMask').hidden) renderCalendar();
     }
 
     function renderUser() {
@@ -1155,6 +1296,62 @@
       busy = false;
       render();
     }
+
+    // ---- 打卡日历（查看历史打卡日子）----
+    // 圆点颜色 = 当天练的部位，和卡片左侧色条一致
+    const DAY_COLORS = {
+      monday: '#ff9800', tuesday: '#ef5350', wednesday: '#26c6da', thursday: '#42b983',
+      friday: '#9575cd', saturday: '#ab47bc', sunday: '#42a5f5'
+    };
+    let calMonth = null; // { y, m }，m 从 0 开始
+
+    function openCalendar() {
+      const n = new Date();
+      calMonth = { y: n.getFullYear(), m: n.getMonth() };
+      document.getElementById('calMask').hidden = false;
+      renderCalendar();
+    }
+
+    function renderCalendar() {
+      const y = calMonth.y, m = calMonth.m;
+      document.getElementById('calTitle').textContent = y + '年' + (m + 1) + '月';
+
+      const pad = new Date(y, m, 1).getDay();          // 周日=0，正好对上「日一二三四五六」
+      const total = new Date(y, m + 1, 0).getDate();
+      const today = todayStr();
+      let html = '';
+      for (let i = 0; i < pad; i++) html += '<div class="cal-cell empty"></div>';
+      for (let d = 1; d <= total; d++) {
+        const ds = fmtDate(new Date(y, m, d));
+        const rec = checkIns[ds];
+        const cls = ['cal-cell'];
+        if (rec) cls.push('done');
+        if (ds === today) cls.push('today');
+        else if (ds > today) cls.push('future');
+        const dot = rec ? '<span class="cal-dot" style="background:' + (DAY_COLORS[rec.day] || '#42a5ff') + '"></span>' : '';
+        const tip = ds + (rec ? ' ' + escAttr(rec.time) + ' 周' + (DAY_NAMES[rec.day] || '') : ' 未打卡');
+        html += '<div class="' + cls.join(' ') + '" title="' + tip + '"><span>' + d + '</span>' + dot + '</div>';
+      }
+      document.getElementById('calGrid').innerHTML = html;
+
+      const monthCount = Object.keys(checkIns).filter(ds => ds.slice(0, 7) === y + '-' + String(m + 1).padStart(2, '0')).length;
+      document.getElementById('calSummary').innerHTML =
+        '本月打卡 <b>' + monthCount + '</b> 天 · 累计 <b>' + Object.keys(checkIns).length + '</b> 天';
+      document.getElementById('calLegend').innerHTML = DAYS.map(day =>
+        '<span><i class="cal-dot" style="background:' + DAY_COLORS[day] + '"></i>周' + DAY_NAMES[day] + '</span>'
+      ).join('');
+    }
+
+    document.getElementById('calBtn').addEventListener('click', openCalendar);
+    document.getElementById('calClose').addEventListener('click', function () { document.getElementById('calMask').hidden = true; });
+    document.getElementById('calPrev').addEventListener('click', function () {
+      if (--calMonth.m < 0) { calMonth.m = 11; calMonth.y--; }
+      renderCalendar();
+    });
+    document.getElementById('calNext').addEventListener('click', function () {
+      if (++calMonth.m > 11) { calMonth.m = 0; calMonth.y++; }
+      renderCalendar();
+    });
 
     // ---- Loading 遮罩 ----
     function showLoading(text) {
