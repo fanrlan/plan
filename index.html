@@ -721,7 +721,10 @@
 
   <div class="user-mask" id="userMask" hidden>
     <div class="user-modal">
-      <div class="user-modal-title">👀 今天谁打卡？</div>
+      <div class="user-modal-title" style="display:flex;justify-content:space-between;align-items:center;">
+        <span>👀 今天谁打卡？</span>
+        <button class="ed-close" id="userClose" hidden>×</button>
+      </div>
       <div class="user-options">
         <button class="user-option" data-name="范若兰">范若兰</button>
         <button class="user-option" data-name="王华莹">王华莹</button>
@@ -1156,6 +1159,9 @@
     // ---- 身份（两人各看各的）----
     function openUserModal(done) {
       const mask = document.getElementById('userMask');
+      const closeBtn = document.getElementById('userClose');
+      closeBtn.hidden = !userName; // 还没选过身份时不给关
+      closeBtn.onclick = function () { mask.hidden = true; };
       mask.hidden = false;
       mask.querySelectorAll('.user-option').forEach(btn => {
         btn.onclick = function () {
@@ -1169,16 +1175,18 @@
       });
     }
 
+    async function startWithUser() {
+      showLoading('正在加载「' + userName + '」的数据…');
+      try {
+        await loadPlan();
+        await initData();
+      } finally { hideLoading(); }
+      render();
+    }
+
     document.getElementById('userSwitch').addEventListener('click', function () {
       openUserModal(async function (changed) {
-        if (changed) {
-          showLoading('正在加载「' + userName + '」的数据…');
-          try {
-            await loadPlan();
-            await initData();
-          } finally { hideLoading(); }
-          render();
-        }
+        if (changed) await startWithUser();
       });
     });
 
@@ -1390,15 +1398,12 @@
       await savePlanToCloud();
     });
 
-    // 一进页面先选人，再看打卡情况
-    openUserModal(async function () {
-      showLoading('正在加载「' + userName + '」的数据…');
-      try {
-        await loadPlan();
-        await initData();
-      } finally { hideLoading(); }
-      render();
-    });
+    // 已选过身份就直接进入（从 B 站等外链返回时不再重复选人），否则先选人
+    if (userName) {
+      startWithUser();
+    } else {
+      openUserModal(function () { startWithUser(); });
+    }
   </script>
 </body>
 
